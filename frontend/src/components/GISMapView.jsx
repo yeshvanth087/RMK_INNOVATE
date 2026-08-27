@@ -1,18 +1,19 @@
 import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
 
-export default function GISMapView({ fleet, defects, incidents, detourPath }) {
+export default function GISMapView({ fleet, defects, incidents, roads, detourPath, onSelectRoad }) {
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
   const busGroup = useRef(null);
   const defectGroup = useRef(null);
   const incidentGroup = useRef(null);
+  const roadQualityGroup = useRef(null);
   const detourGroup = useRef(null);
 
   useEffect(() => {
     if (!mapInstance.current && mapRef.current) {
       mapInstance.current = L.map(mapRef.current, {
-        center: [13.0400, 80.2300],
+        center: [13.0450, 80.2450],
         zoom: 12,
         zoomControl: true
       });
@@ -23,16 +24,46 @@ export default function GISMapView({ fleet, defects, incidents, detourPath }) {
         maxZoom: 19
       }).addTo(mapInstance.current);
 
-      busGroup.current = L.layerGroup().addTo(mapInstance.current);
-      defectGroup.current = L.layerGroup().addTo(mapInstance.current);
+      roadQualityGroup.current = L.layerGroup().addTo(mapInstance.current);
+      hazardGroup.current = L.layerGroup().addTo(mapInstance.current);
       incidentGroup.current = L.layerGroup().addTo(mapInstance.current);
+      busGroup.current = L.layerGroup().addTo(mapInstance.current);
       detourGroup.current = L.layerGroup().addTo(mapInstance.current);
     }
   }, []);
 
+  // Update Road Quality Polylines
+  useEffect(() => {
+    if (!roadQualityGroup.current || !roads) return;
+    roadQualityGroup.current.clearLayers();
+
+    roads.forEach((r) => {
+      const polyline = L.polyline(r.coordinates, {
+        color: r.color_hex,
+        weight: 6,
+        opacity: 0.85,
+        lineCap: 'round',
+        lineJoin: 'round'
+      });
+
+      polyline.bindTooltip(`
+        <div class="p-1 text-xs font-sans">
+          <span class="font-bold text-slate-950">${r.name}</span><br>
+          <span class="font-bold" style="color: ${r.color_hex}">★ ${r.star_rating} | Score: ${r.quality_score}/100 (${r.grade})</span>
+        </div>
+      `, { sticky: true });
+
+      polyline.on('click', () => {
+        if (onSelectRoad) onSelectRoad(r);
+      });
+
+      roadQualityGroup.current.addLayer(polyline);
+    });
+  }, [roads, onSelectRoad]);
+
   // Update Bus Markers
   useEffect(() => {
-    if (!busGroup.current) return;
+    if (!busGroup.current || !fleet) return;
     busGroup.current.clearLayers();
 
     fleet.forEach((b) => {
@@ -40,10 +71,10 @@ export default function GISMapView({ fleet, defects, incidents, detourPath }) {
         className: 'bus-marker-icon',
         html: `
           <div class="relative flex items-center justify-center">
-            <div class="w-8 h-8 rounded-full bg-cyan-500/20 border-2 border-cyan-400 flex items-center justify-center shadow-lg shadow-cyan-500/50">
-              <span class="text-white text-[10px] font-bold">🚍</span>
+            <div class="w-8 h-8 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 border-2 border-white flex items-center justify-center shadow-lg shadow-cyan-500/80">
+              <span class="text-white text-xs font-bold">🚍</span>
             </div>
-            <span class="absolute -bottom-4 bg-slate-900/90 text-cyan-300 text-[9px] font-bold px-1 rounded border border-cyan-800 whitespace-nowrap">
+            <span class="absolute -bottom-4 bg-slate-950/95 text-cyan-300 font-mono text-[9px] font-bold px-1.5 py-0.5 rounded border border-cyan-500/50 whitespace-nowrap shadow-md">
               ${b.bus_id}
             </span>
           </div>
@@ -56,10 +87,10 @@ export default function GISMapView({ fleet, defects, incidents, detourPath }) {
       marker.bindPopup(`
         <div class="p-2 text-xs">
           <div class="font-bold text-cyan-400 text-sm mb-1">${b.bus_id} • ${b.route_id}</div>
-          <div class="text-slate-300"><b>Speed:</b> ${b.speed_kmh} km/h</div>
-          <div class="text-slate-300"><b>Heading:</b> ${Math.round(b.heading_deg)}°</div>
-          <div class="text-slate-300"><b>Passenger Crowding:</b> ${b.crowding_pct}%</div>
-          <div class="text-slate-400 text-[10px] mt-1">Edge Sensing AI Online</div>
+          <div class="text-slate-200"><b>Speed:</b> ${b.speed_kmh} km/h</div>
+          <div class="text-slate-200"><b>Heading:</b> ${Math.round(b.heading_deg)}°</div>
+          <div class="text-slate-200"><b>Passenger Crowding:</b> ${b.crowding_pct}%</div>
+          <div class="text-emerald-400 text-[10px] mt-1 font-bold">Edge Sensing AI Online</div>
         </div>
       `, { className: 'custom-popup' });
 
@@ -69,8 +100,8 @@ export default function GISMapView({ fleet, defects, incidents, detourPath }) {
 
   // Update Road Defects
   useEffect(() => {
-    if (!defectGroup.current) return;
-    defectGroup.current.clearLayers();
+    if (!hazardGroup.current || !defects) return;
+    hazardGroup.current.clearLayers();
 
     defects.forEach((f) => {
       const p = f.properties || f;
@@ -86,10 +117,10 @@ export default function GISMapView({ fleet, defects, incidents, detourPath }) {
         className: 'hazard-marker-icon',
         html: `
           <div class="relative flex items-center justify-center">
-            <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs shadow-lg" style="background-color: ${color}20; border: 2px solid ${color}">
+            <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs shadow-lg" style="background-color: ${color}30; border: 2px solid ${color}">
               ${emoji}
             </div>
-            <span class="absolute -top-3 bg-slate-900/90 text-white text-[8px] font-bold px-1 rounded border border-slate-700">
+            <span class="absolute -top-3 bg-slate-950/90 text-white text-[8px] font-bold px-1 rounded border border-slate-700">
               ${p.confirmation_count || 1}x
             </span>
           </div>
@@ -102,27 +133,26 @@ export default function GISMapView({ fleet, defects, incidents, detourPath }) {
       marker.bindPopup(`
         <div class="p-2 text-xs">
           <div class="font-bold text-amber-400 text-sm capitalize mb-1">${(p.hazard_type || '').replace(/_/g, ' ')}</div>
-          <div class="text-slate-300"><b>Severity:</b> <span class="text-red-400 font-bold">${p.severity}</span></div>
-          <div class="text-slate-300"><b>AI Confidence:</b> ${Math.round((p.confidence || 0.9) * 100)}%</div>
-          <div class="text-slate-300"><b>Confirmed by:</b> ${p.confirmation_count || 1} Sensing Buses</div>
-          <div class="text-slate-400 text-[10px] mt-1">Ticket: ${p.ticket_id || 'Auto-Generating'}</div>
+          <div class="text-slate-200"><b>Severity:</b> <span class="text-red-400 font-bold">${p.severity}</span></div>
+          <div class="text-slate-200"><b>AI Confidence:</b> ${Math.round((p.confidence || 0.9) * 100)}%</div>
+          <div class="text-slate-200"><b>Confirmed by:</b> ${p.confirmation_count || 1} Buses</div>
         </div>
       `, { className: 'custom-popup' });
 
-      defectGroup.current.addLayer(marker);
+      hazardGroup.current.addLayer(marker);
     });
   }, [defects]);
 
   // Update Police Incidents
   useEffect(() => {
-    if (!incidentGroup.current) return;
+    if (!incidentGroup.current || !incidents) return;
     incidentGroup.current.clearLayers();
 
     incidents.forEach((inc) => {
       const incIcon = L.divIcon({
         className: 'incident-marker-icon',
         html: `
-          <div class="w-6 h-6 rounded-full bg-red-600/30 border-2 border-red-500 flex items-center justify-center text-xs animate-bounce shadow-lg shadow-red-500/50">
+          <div class="w-6 h-6 rounded-full bg-red-600/40 border-2 border-red-500 flex items-center justify-center text-xs animate-bounce shadow-lg shadow-red-500/80">
             🚨
           </div>
         `,
@@ -134,9 +164,8 @@ export default function GISMapView({ fleet, defects, incidents, detourPath }) {
       marker.bindPopup(`
         <div class="p-2 text-xs">
           <div class="font-bold text-red-400 text-sm mb-1">🚨 ${inc.incident_type}</div>
-          <div class="text-slate-200 font-mono text-sm bg-slate-900 p-1 rounded my-1 text-center font-bold border border-red-800">${inc.license_plate}</div>
-          <div class="text-slate-300"><b>Speed:</b> ~${inc.estimated_speed} km/h</div>
-          <div class="text-slate-400 text-[10px] mt-1">Reporting Bus: ${inc.reporting_bus_id}</div>
+          <div class="text-white font-mono text-sm bg-slate-950 p-1 rounded my-1 text-center font-bold border border-red-800">${inc.license_plate}</div>
+          <div class="text-slate-200"><b>Speed:</b> ~${inc.estimated_speed} km/h</div>
         </div>
       `, { className: 'custom-popup' });
 
@@ -144,39 +173,26 @@ export default function GISMapView({ fleet, defects, incidents, detourPath }) {
     });
   }, [incidents]);
 
-  // Update Dynamic Detour Polyline
-  useEffect(() => {
-    if (!detourGroup.current) return;
-    detourGroup.current.clearLayers();
-
-    if (detourPath && detourPath.length > 0) {
-      const polyline = L.polyline(detourPath, { color: '#10b981', weight: 4, dashArray: '6, 8' });
-      detourGroup.current.addLayer(polyline);
-      if (mapInstance.current) {
-        mapInstance.current.fitBounds(polyline.getBounds(), { padding: [40, 40] });
-      }
-    }
-  }, [detourPath]);
-
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex-1 flex flex-col relative shadow-xl overflow-hidden min-h-[520px]">
+    <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex-1 flex flex-col relative shadow-2xl overflow-hidden min-h-[540px]">
       <div className="flex items-center justify-between mb-3 z-10">
-        <span className="text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center space-x-1.5">
-          <span>Live Fleet GIS Map & Dynamic Hazard Layer</span>
+        <span className="text-xs font-bold uppercase tracking-wider text-cyan-300 flex items-center space-x-1.5">
+          <span>Live Fleet GIS Map & Color-Coded Road Quality Polylines</span>
         </span>
-        <div className="flex items-center space-x-3 text-xs bg-slate-950/80 px-3 py-1 rounded-lg border border-slate-800">
-          <span className="text-slate-300">Active Sensors: {fleet.length}</span>
+        <div className="flex items-center space-x-3 text-xs bg-slate-950/80 px-3 py-1 rounded-xl border border-slate-800">
+          <span className="text-slate-200 font-bold">Active Sensors: {fleet.length}</span>
         </div>
       </div>
 
-      <div ref={mapRef} className="flex-1 w-full rounded-xl z-0 overflow-hidden border border-slate-800 min-h-[440px]"></div>
+      <div ref={mapRef} className="flex-1 w-full rounded-xl z-0 overflow-hidden border border-slate-700 min-h-[440px]"></div>
 
-      <div className="mt-3 flex flex-wrap items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800/80">
-        <div className="flex items-center space-x-4">
-          <span className="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span><span>Sensing Bus</span></span>
-          <span className="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span><span>Pothole / Crack</span></span>
-          <span className="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span><span>Waterlogging</span></span>
-          <span className="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-full bg-red-500"></span><span>Hit & Run / ANPR</span></span>
+      <div className="mt-3 flex flex-wrap items-center justify-between text-xs text-slate-300 pt-2 border-t border-slate-800">
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span><span>Grade A (Smooth)</span></span>
+          <span className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 rounded-full bg-cyan-400"></span><span>Grade B (Good)</span></span>
+          <span className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span><span>Grade C (Fair)</span></span>
+          <span className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 rounded-full bg-orange-400"></span><span>Grade D (Poor)</span></span>
+          <span className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 rounded-full bg-red-500"></span><span>Grade F (Hazardous)</span></span>
         </div>
       </div>
     </div>

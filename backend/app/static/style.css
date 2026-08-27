@@ -1,50 +1,118 @@
-/* Custom styling for NeuroNex UrbanSense Command Center */
+/* ==========================================================================
+   NEURONEX URBANSENSE AI - VIBRANT HIGH-CONTRAST THEME & GLOWING HUES
+   ========================================================================== */
 
-/* Leaflet Map Custom Marker Styling */
+:root {
+  --primary-cyan: #00f2fe;
+  --secondary-teal: #4facfe;
+  --accent-orange: #ff7300;
+  --accent-emerald: #00f5a0;
+  --accent-purple: #a855f7;
+  --accent-red: #ff3366;
+  --bg-dark: #070b14;
+  --panel-bg: rgba(13, 20, 36, 0.85);
+}
+
+body {
+  background-color: var(--bg-dark);
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(0, 242, 254, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(255, 115, 0, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.05) 0%, transparent 60%);
+  background-attachment: fixed;
+}
+
+/* Glassmorphism Panel with Luminous Neon Glow */
+.glass-panel {
+  background: var(--panel-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), 0 0 20px -5px rgba(0, 242, 254, 0.1);
+}
+
+.glass-panel:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.8), 0 0 25px -3px rgba(0, 242, 254, 0.18);
+}
+
+/* Logo Hexagon Glow */
+.logo-container {
+  box-shadow: 0 0 25px rgba(0, 242, 254, 0.35), 0 0 10px rgba(255, 115, 0, 0.25);
+  border: 1.5px solid rgba(0, 242, 254, 0.5);
+}
+
+/* High-Contrast Leaflet Map Custom Marker Styling */
 .bus-marker-icon {
   background: transparent;
   border: none;
 }
 
 .custom-popup .leaflet-popup-content-wrapper {
-  background: #0f172a;
+  background: #0b1329;
   color: #f8fafc;
-  border: 1px solid #334155;
-  border-radius: 0.75rem;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  border: 1.5px solid #00f2fe;
+  border-radius: 1rem;
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 242, 254, 0.3);
 }
 
 .custom-popup .leaflet-popup-tip {
-  background: #0f172a;
-  border: 1px solid #334155;
+  background: #0b1329;
+  border: 1.5px solid #00f2fe;
 }
 
-/* Custom Scrollbars */
+/* Glowing Road Polylines */
+.road-polyline-grade-a {
+  filter: drop-shadow(0 0 8px #10b981);
+}
+
+.road-polyline-grade-b {
+  filter: drop-shadow(0 0 8px #06b6d4);
+}
+
+.road-polyline-grade-c {
+  filter: drop-shadow(0 0 8px #facc15);
+}
+
+.road-polyline-grade-d {
+  filter: drop-shadow(0 0 8px #f97316);
+}
+
+.road-polyline-grade-f {
+  filter: drop-shadow(0 0 10px #ef4444);
+}
+
+/* Pulsing Badge Animations */
+@keyframes neon-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.8)); }
+  50% { opacity: 0.8; transform: scale(1.04); filter: drop-shadow(0 0 14px rgba(0, 242, 254, 1)); }
+}
+
+.animate-neon-pulse {
+  animation: neon-pulse 2.5s infinite ease-in-out;
+}
+
+/* Custom Scrollbars with Electric Gradient */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #020617;
+  background: #050811;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: linear-gradient(to bottom, #00f2fe, #3b82f6);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: linear-gradient(to bottom, #00f5a0, #00f2fe);
 }
 
-/* Pulse animation */
-@keyframes ping-slow {
-  0% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.4); opacity: 0.2; }
-  100% { transform: scale(1); opacity: 0.8; }
-}
-
-.pulse-hazard {
-  animation: ping-slow 2s infinite ease-in-out;
+/* Star Rating Hover Glow */
+.star-btn:hover {
+  transform: scale(1.2);
+  filter: drop-shadow(0 0 6px #facc15);
 }

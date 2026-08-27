@@ -7,6 +7,7 @@ import PwdTicketManager from './components/PwdTicketManager';
 import TransitAnalytics from './components/TransitAnalytics';
 import AIAssistantChat from './components/AIAssistantChat';
 import CameraHUDModal from './components/CameraHUDModal';
+import RoadRatingsPortal from './components/RoadRatingsPortal';
 import { AlertTriangle } from 'lucide-react';
 
 export default function App() {
@@ -21,18 +22,20 @@ export default function App() {
   const [tickets, setTickets] = useState([]);
   const [kpis, setKpis] = useState({});
   const [bottlenecks, setBottlenecks] = useState([]);
+  const [roads, setRoads] = useState([]);
   const [detourPath, setDetourPath] = useState(null);
 
   // Polling Real-Time Data from Backend
   const refreshData = async () => {
     try {
-      const [fRes, dRes, iRes, tRes, kRes, bRes] = await Promise.all([
+      const [fRes, dRes, iRes, tRes, kRes, bRes, rRes] = await Promise.all([
         fetch('/api/gis/fleet-live').then((r) => r.json()),
         fetch('/api/gis/road-defects-geojson').then((r) => r.json()),
         fetch('/api/incidents/active').then((r) => r.json()),
         fetch('/api/tickets/').then((r) => r.json()),
         fetch('/api/analytics/kpis').then((r) => r.json()),
-        fetch('/api/analytics/bottlenecks').then((r) => r.json())
+        fetch('/api/analytics/bottlenecks').then((r) => r.json()),
+        fetch('/api/roads/ratings').then((r) => r.json())
       ]);
 
       setFleet(fRes || []);
@@ -41,6 +44,7 @@ export default function App() {
       setTickets(tRes || []);
       setKpis(kRes || {});
       setBottlenecks(bRes || []);
+      setRoads(rRes || []);
     } catch (err) {
       console.error('Error refreshing live data:', err);
     }
@@ -74,6 +78,15 @@ export default function App() {
     refreshData();
   };
 
+  const handleRateRoad = async (roadId, rating) => {
+    await fetch('/api/roads/rate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ road_id: roadId, rating })
+    });
+    refreshData();
+  };
+
   return (
     <div className="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-cyan-500 selection:text-black">
       {/* 1. TOP NAVBAR */}
@@ -96,6 +109,7 @@ export default function App() {
             fleet={fleet}
             defects={defects}
             incidents={incidents}
+            roads={roads}
             detourPath={detourPath}
           />
         </div>
@@ -105,15 +119,13 @@ export default function App() {
           {/* PORTAL 1: UNIFIED COMMAND CENTER (DEFAULT) */}
           {activePortal === 'unified' && (
             <div className="space-y-6">
-              {/* INCIDENTS FEED */}
               <IncidentFeed
                 incidents={incidents}
                 onDispatch={handleDispatchPolice}
                 isDetailedView={false}
               />
 
-              {/* ROAD DEFECTS SUMMARY CARD */}
-              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
+              <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3 border-l-4 border-l-amber-400">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <AlertTriangle className="w-5 h-5 text-amber-400" />
@@ -121,7 +133,7 @@ export default function App() {
                       Detected Road Defects & Hazards
                     </h3>
                   </div>
-                  <span className="text-[11px] text-slate-400">Deduplicated (15m Radius)</span>
+                  <span className="text-[11px] text-slate-300 font-semibold">Deduplicated (15m Radius)</span>
                 </div>
 
                 <div className="space-y-2.5 max-h-56 overflow-y-auto pr-1">
@@ -134,9 +146,7 @@ export default function App() {
                         className="bg-slate-950/80 border border-slate-800 p-2.5 rounded-xl text-xs flex items-center justify-between hover:border-amber-500/40 transition-all"
                       >
                         <div className="flex items-center space-x-2.5">
-                          <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-400 font-bold">
-                            {isCritical ? '🚨' : '⚠️'}
-                          </div>
+                          <span className="text-base">{isCritical ? '🚨' : '⚠️'}</span>
                           <div>
                             <div className="font-semibold text-slate-200 capitalize">
                               {(p.hazard_type || '').replace(/_/g, ' ')}
@@ -157,7 +167,7 @@ export default function App() {
                           >
                             {p.severity}
                           </span>
-                          <div className="text-[10px] text-slate-500 mt-1">
+                          <div className="text-[10px] text-slate-400 mt-1">
                             {p.confirmation_count || 1} buses confirmed
                           </div>
                         </div>
@@ -167,6 +177,14 @@ export default function App() {
                 </div>
               </div>
             </div>
+          )}
+
+          {/* PORTAL: ROAD QUALITY RATINGS MODULE */}
+          {activePortal === 'road-ratings' && (
+            <RoadRatingsPortal
+              roads={roads}
+              onRateRoad={handleRateRoad}
+            />
           )}
 
           {/* PORTAL 2: MUNICIPAL PWD */}

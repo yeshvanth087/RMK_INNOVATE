@@ -112,5 +112,15 @@ class TestUrbanSensePlatform(unittest.TestCase):
         self.assertGreaterEqual(kpis["urban_roads_scanned_km"], 100.0)
         print(f"[PASS] Test 10 Passed: GTFS Corridor Analytics -> {kpis['active_sensing_buses']} active sensing buses")
 
+    def test_11_road_ratings_service(self):
+        from backend.app.services.road_rating_service import road_rating_service
+        ratings = road_rating_service.get_all_road_ratings()
+        self.assertGreater(len(ratings), 3)
+        self.assertIn("quality_score", ratings[0])
+        self.assertIn("grade", ratings[0])
+        self.assertIn("color_hex", ratings[0])
+        print(f"[PASS] Test 11 Passed: Road Quality Rating Index -> {len(ratings)} corridors rated")
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+

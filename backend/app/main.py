@@ -16,12 +16,13 @@ from backend.app.routers import (
     incidents_router,
     tickets_router,
     analytics_router,
-    assistant_router
+    assistant_router,
+    roads_router
 )
 
 app = FastAPI(
     title="NeuroNex UrbanSense AI Platform",
-    description="AI-Powered Mobile Urban Intelligence Platform Using Public Transport Fleet (BEL - SIH26124)",
+    description="AI-Powered Mobile Urban Intelligence Platform Using Public Transport Fleet",
     version="1.0.0"
 )
 
@@ -41,6 +42,7 @@ app.include_router(incidents_router.router)
 app.include_router(tickets_router.router)
 app.include_router(analytics_router.router)
 app.include_router(assistant_router.router)
+app.include_router(roads_router.router)
 
 # Static files directory for Frontend GIS Command Center
 STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
