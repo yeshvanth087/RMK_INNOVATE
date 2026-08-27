@@ -18,7 +18,7 @@
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/style.css?v=3.0">
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-cyan-500 selection:text-black">
 
@@ -46,6 +46,10 @@
       <button onclick="switchPortal('unified')" id="btn-portal-unified" class="portal-btn px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-all bg-cyan-600 text-white shadow-md">
         <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
         <span>Command Center</span>
+      </button>
+      <button onclick="switchPortal('camera')" id="btn-portal-camera" class="portal-btn px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-all text-slate-400 hover:text-slate-200">
+        <i data-lucide="video" class="w-4 h-4 text-cyan-400"></i>
+        <span>Live Camera HUD</span>
       </button>
       <button onclick="switchPortal('pwd')" id="btn-portal-pwd" class="portal-btn px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-all text-slate-400 hover:text-slate-200">
         <i data-lucide="wrench" class="w-4 h-4"></i>
@@ -210,6 +214,52 @@
           </div>
         </div>
 
+      </div>
+
+      <!-- ================= PORTAL VIEW: LIVE CAMERA AI HUD ================= -->
+      <div id="portal-camera-view" class="portal-panel space-y-4 hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="video" class="w-5 h-5 text-cyan-400"></i>
+              <h3 class="text-sm font-bold text-slate-100 uppercase tracking-wider">
+                Live Onboard Bus Camera AI Stream
+              </h3>
+            </div>
+            <span class="text-[10px] bg-cyan-950 text-cyan-400 border border-cyan-800 px-2 py-0.5 rounded-full font-bold animate-pulse">
+              JETSON ORIN INFERENCE
+            </span>
+          </div>
+
+          <div class="flex items-center space-x-2 bg-slate-950 p-1.5 rounded-xl border border-slate-800">
+            <button onclick="selectHUDCam('front')" id="dash-cam-front" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-cyan-600 text-white">
+              Front: Road Hazards
+            </button>
+            <button onclick="selectHUDCam('rear')" id="dash-cam-rear" class="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white">
+              Rear: ANPR Speed
+            </button>
+            <button onclick="selectHUDCam('cabin')" id="dash-cam-cabin" class="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white">
+              Cabin: Crowding
+            </button>
+            <button onclick="selectHUDCam('vru')" id="dash-cam-vru" class="px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white">
+              Side: School VRU
+            </button>
+          </div>
+
+          <div id="dash-camera-stream" class="bg-black rounded-xl overflow-hidden border border-slate-800 p-2 min-h-[300px] flex items-center justify-center relative">
+            <svg class="w-full h-64 rounded-xl" viewBox="0 0 800 400" fill="none">
+              <rect width="800" height="400" fill="#0f172a"/>
+              <polygon points="250,400 380,180 420,180 550,400" fill="#1e293b"/>
+              <line x1="400" y1="180" x2="400" y2="400" stroke="#facc15" stroke-width="4" stroke-dasharray="16, 16"/>
+              <rect x="340" y="270" width="120" height="60" stroke="#ef4444" stroke-width="2.5" fill="#ef444420"/>
+              <text x="345" y="265" fill="#ef4444" font-size="14" font-family="monospace" font-weight="bold">⚠️ POTHOLE [HIGH] 94%</text>
+              <rect x="370" y="190" width="90" height="60" stroke="#06b6d4" stroke-width="2" fill="#06b6d415"/>
+              <text x="370" y="185" fill="#06b6d4" font-size="12" font-family="monospace">Car [ID: 104] 97%</text>
+              <rect x="260" y="250" width="75" height="70" stroke="#06b6d4" stroke-width="2" fill="#06b6d415"/>
+              <text x="260" y="245" fill="#06b6d4" font-size="12" font-family="monospace">Auto-Rickshaw 92%</text>
+            </svg>
+          </div>
+        </div>
       </div>
 
       <!-- ================= PORTAL VIEW 2: MUNICIPAL PWD ================= -->
@@ -409,6 +459,6 @@
     </div>
   </div>
 
-  <script src="/static/app.js"></script>
+  <script src="/static/app.js?v=3.0"></script>
 </body>
 </html>
