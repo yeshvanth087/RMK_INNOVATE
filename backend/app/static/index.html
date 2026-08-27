@@ -63,6 +63,11 @@
 
     <!-- QUICK ACTIONS -->
     <div class="flex items-center space-x-3">
+      <button onclick="toggleCameraHUD()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-slate-700 text-xs font-semibold flex items-center space-x-1.5 transition-all">
+        <i data-lucide="video" class="w-4 h-4 text-cyan-400"></i>
+        <span>Live Camera AI HUD</span>
+      </button>
+
       <div class="flex items-center space-x-2 text-xs bg-slate-950/60 px-3 py-1.5 rounded-lg border border-slate-800">
         <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
         <span class="text-slate-300 font-medium" id="fleet-status-text">Fleet Active (8 Buses)</span>
@@ -346,10 +351,61 @@
       </div>
     </div>
 
-    <!-- CHAT INPUT -->
-    <div class="pt-3 border-t border-slate-800 flex items-center space-x-2">
-      <input type="text" id="ai-chat-input" placeholder="e.g. Show high severity potholes..." onkeydown="if(event.key==='Enter') sendAIChatQuery()" class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-cyan-500">
-      <button onclick="sendAIChatQuery()" class="p-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg"><i data-lucide="send" class="w-4 h-4"></i></button>
+  <!-- LIVE ONBOARD CAMERA AI HUD MODAL -->
+  <div id="camera-hud-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
+        <div class="flex items-center space-x-3">
+          <div class="p-2 rounded-lg bg-cyan-500/20 text-cyan-400">
+            <i data-lucide="video" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-slate-100 flex items-center space-x-2">
+              <span>Onboard Bus Edge-AI Vision Stream</span>
+              <span class="text-[10px] bg-red-950 text-red-400 border border-red-800 px-2 py-0.5 rounded-full font-bold animate-pulse">
+                LIVE INFERENCE (Jetson Orin Nano)
+              </span>
+            </h2>
+            <p class="text-xs text-slate-400">Bus Unit: BUS-BEL-104 • Model: YOLOv9 + ByteTrack + HSRP ANPR</p>
+          </div>
+        </div>
+        <button onclick="toggleCameraHUD()" class="text-slate-400 hover:text-slate-200">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+
+      <div class="px-6 py-2.5 bg-slate-950/40 border-b border-slate-800 flex items-center space-x-2">
+        <button onclick="selectHUDCam('front')" id="hud-tab-front" class="hud-tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-all bg-cyan-600 text-white shadow-md">
+          <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+          <span>Front Cam: Road Defects & Traffic</span>
+        </button>
+        <button onclick="selectHUDCam('rear')" id="hud-tab-rear" class="hud-tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-all bg-slate-800/60 text-slate-400 hover:text-slate-200">
+          <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
+          <span>Rear/Side Cam: ANPR & Speeding</span>
+        </button>
+        <button onclick="selectHUDCam('cabin')" id="hud-tab-cabin" class="hud-tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-all bg-slate-800/60 text-slate-400 hover:text-slate-200">
+          <i data-lucide="users" class="w-3.5 h-3.5"></i>
+          <span>Cabin Cam: Passenger Crowding</span>
+        </button>
+        <button onclick="selectHUDCam('vru')" id="hud-tab-vru" class="hud-tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-all bg-slate-800/60 text-slate-400 hover:text-slate-200">
+          <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i>
+          <span>Blindspot Cam: School VRU</span>
+        </button>
+      </div>
+
+      <div id="hud-viewport" class="p-6 flex-1 flex flex-col items-center justify-center bg-black relative min-h-[420px] overflow-hidden">
+        <!-- TOP METADATA HUD -->
+        <div class="absolute top-6 left-8 right-8 flex items-center justify-between text-[11px] font-mono text-cyan-400 bg-slate-950/70 backdrop-blur px-4 py-1.5 rounded-lg border border-cyan-900/50 z-10">
+          <span id="hud-cam-id">CAM: 01_HD</span>
+          <span>FPS: 29.8 | LATENCY: 28ms</span>
+          <span>TENSORRT ENGINE: ONNX_FP16</span>
+          <span>GPS: 13.0827° N, 80.2707° E</span>
+        </div>
+
+        <div id="hud-svg-container" class="w-full h-full flex items-center justify-center">
+          <!-- Dynamically populated via JS -->
+        </div>
+      </div>
     </div>
   </div>
 

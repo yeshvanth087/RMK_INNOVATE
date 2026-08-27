@@ -494,3 +494,83 @@ async function sendAIChatQuery() {
     console.error("AI chat error:", e);
   }
 }
+
+// Live Onboard Camera AI HUD Controller
+let currentHudCam = 'front';
+function toggleCameraHUD() {
+  const modal = document.getElementById("camera-hud-modal");
+  modal.classList.toggle("hidden");
+  if (!modal.classList.contains("hidden")) {
+    selectHUDCam(currentHudCam);
+  }
+}
+
+function selectHUDCam(camId) {
+  currentHudCam = camId;
+  document.querySelectorAll(".hud-tab-btn").forEach(b => {
+    b.classList.remove("bg-cyan-600", "text-white", "shadow-md");
+    b.classList.add("bg-slate-800/60", "text-slate-400");
+  });
+  const activeTab = document.getElementById(`hud-tab-${camId}`);
+  if (activeTab) {
+    activeTab.classList.add("bg-cyan-600", "text-white", "shadow-md");
+    activeTab.classList.remove("bg-slate-800/60", "text-slate-400");
+  }
+
+  const labelMap = { front: "CAM: 01_FRONT_DEFECT", rear: "CAM: 02_REAR_ANPR", cabin: "CAM: 03_CABIN_CROWD", vru: "CAM: 04_SIDE_VRU" };
+  document.getElementById("hud-cam-id").innerText = labelMap[camId] || "CAM: 01_HD";
+
+  const container = document.getElementById("hud-svg-container");
+  if (camId === 'front') {
+    container.innerHTML = `
+      <svg class="w-full h-80 rounded-xl" viewBox="0 0 800 400" fill="none">
+        <rect width="800" height="400" fill="#0f172a"/>
+        <polygon points="250,400 380,180 420,180 550,400" fill="#1e293b"/>
+        <line x1="400" y1="180" x2="400" y2="400" stroke="#facc15" stroke-width="4" stroke-dasharray="16, 16"/>
+        <rect x="340" y="270" width="120" height="60" stroke="#ef4444" stroke-width="2.5" fill="#ef444420"/>
+        <text x="345" y="265" fill="#ef4444" font-size="12" font-family="monospace" font-weight="bold">⚠️ POTHOLE [HIGH] 94%</text>
+        <rect x="370" y="190" width="90" height="60" stroke="#06b6d4" stroke-width="2" fill="#06b6d415"/>
+        <text x="370" y="185" fill="#06b6d4" font-size="11" font-family="monospace">Car [ID: 104] 97%</text>
+        <rect x="260" y="250" width="75" height="70" stroke="#06b6d4" stroke-width="2" fill="#06b6d415"/>
+        <text x="260" y="245" fill="#06b6d4" font-size="11" font-family="monospace">Auto-Rickshaw 92%</text>
+      </svg>
+    `;
+  } else if (camId === 'rear') {
+    container.innerHTML = `
+      <svg class="w-full h-80 rounded-xl" viewBox="0 0 800 400" fill="none">
+        <rect width="800" height="400" fill="#0f172a"/>
+        <polygon points="200,400 370,160 430,160 600,400" fill="#1e293b"/>
+        <line x1="400" y1="160" x2="400" y2="400" stroke="#facc15" stroke-width="4" stroke-dasharray="16, 16"/>
+        <rect x="420" y="190" width="160" height="130" stroke="#ef4444" stroke-width="3" fill="#ef444420"/>
+        <text x="420" y="180" fill="#ef4444" font-size="13" font-family="monospace" font-weight="bold">🚨 RASH OVERTAKE | SPEED: 84.5 km/h</text>
+        <rect x="450" y="265" width="100" height="30" stroke="#38bdf8" stroke-width="2" fill="#0284c740"/>
+        <text x="455" y="285" fill="#ffffff" font-size="13" font-family="monospace" font-weight="bold">TN 09 BK 4591</text>
+        <text x="450" y="310" fill="#38bdf8" font-size="10" font-family="monospace">OCR Conf: 96.4%</text>
+      </svg>
+    `;
+  } else if (camId === 'cabin') {
+    container.innerHTML = `
+      <svg class="w-full h-80 rounded-xl" viewBox="0 0 800 400" fill="none">
+        <rect width="800" height="400" fill="#090d16"/>
+        <rect x="150" y="80" width="500" height="240" rx="12" fill="#1e293b" stroke="#334155"/>
+        <text x="400" y="130" fill="#38bdf8" font-size="16" font-family="sans-serif" text-anchor="middle" font-weight="bold">PASSENGER OCCUPANCY ESTIMATION</text>
+        <circle cx="280" cy="200" r="30" fill="#06b6d440" stroke="#06b6d4" stroke-width="2"/>
+        <circle cx="360" cy="200" r="30" fill="#06b6d440" stroke="#06b6d4" stroke-width="2"/>
+        <circle cx="440" cy="200" r="30" fill="#06b6d440" stroke="#06b6d4" stroke-width="2"/>
+        <circle cx="520" cy="200" r="30" fill="#06b6d440" stroke="#06b6d4" stroke-width="2"/>
+        <text x="400" y="275" fill="#e2e8f0" font-size="14" font-family="sans-serif" text-anchor="middle">Occupancy: 38 / 50 Seats (76% - HIGH CROWDING)</text>
+      </svg>
+    `;
+  } else if (camId === 'vru') {
+    container.innerHTML = `
+      <svg class="w-full h-80 rounded-xl" viewBox="0 0 800 400" fill="none">
+        <rect width="800" height="400" fill="#0f172a"/>
+        <rect x="100" y="150" width="600" height="150" fill="#1e293b"/>
+        <rect x="250" y="150" width="300" height="150" fill="#facc1530" stroke="#facc15" stroke-dasharray="12, 12"/>
+        <text x="400" y="140" fill="#facc15" font-size="14" font-family="monospace" text-anchor="middle" font-weight="bold">🚸 SCHOOL CROSSING ZONE IDENTIFIED</text>
+        <rect x="340" y="180" width="60" height="100" stroke="#a855f7" stroke-width="2" fill="#a855f720"/>
+        <text x="340" y="175" fill="#a855f7" font-size="11" font-family="monospace">Child Pedestrian 91%</text>
+      </svg>
+    `;
+  }
+}
