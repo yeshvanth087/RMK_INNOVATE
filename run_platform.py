@@ -26,29 +26,41 @@ def get_local_ip():
     except Exception:
         return "127.0.0.1"
 
-def start_edge_fleet_simulator():
+def find_available_port(preferred_port=8000):
+    """Finds available port if preferred is already in use."""
+    for port in [preferred_port, 8001, 8080, 8888, 5000]:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            try:
+                s.bind(("0.0.0.0", port))
+                return port
+            except OSError:
+                continue
+    return preferred_port
+
+def start_edge_fleet_simulator(port=8000):
     """Background worker thread simulating multi-bus edge telemetry pings."""
     time.sleep(2.5)  # Wait for FastAPI server to boot
-    simulator = BusFleetSimulator(num_buses=8, backend_url="http://127.0.0.1:8000/api/telemetry/ping")
+    simulator = BusFleetSimulator(num_buses=8, backend_url=f"http://127.0.0.1:{port}/api/telemetry/ping")
     simulator.run_continuous_stream(interval_seconds=3.0)
 
 if __name__ == "__main__":
     local_ip = get_local_ip()
+    port = find_available_port(8000)
     
     print("=" * 75)
     print(" [*] NEURONEX URBANSENSE AI - MOBILE URBAN INTELLIGENCE PLATFORM")
     print(" [*] Problem Statement: SIH26124 | Bharat Electronics Limited (BEL)")
     print("=" * 75)
-    print(f"[+] Access on THIS laptop:     http://localhost:8000")
-    print(f"[+] Access on FRIEND'S laptop: http://{local_ip}:8000")
-    print(f"[+] API Documentation (Swagger): http://localhost:8000/docs")
+    print(f"[+] Access on THIS laptop:     http://localhost:{port}")
+    print(f"[+] Access on FRIEND'S laptop: http://{local_ip}:{port}")
+    print(f"[+] API Documentation (Swagger): http://localhost:{port}/docs")
     print("=" * 75)
     print(" (Make sure both laptops are connected to the same Wi-Fi / Mobile Hotspot)")
     print("=" * 75)
 
     # Launch edge simulator in background thread
-    sim_thread = threading.Thread(target=start_edge_fleet_simulator, daemon=True)
+    sim_thread = threading.Thread(target=start_edge_fleet_simulator, args=(port,), daemon=True)
     sim_thread.start()
 
     # Start FastAPI Web Server on 0.0.0.0 (Accessible across local network)
-    uvicorn.run("backend.app.main:app", host="0.0.0.0", port=8000, reload=False)
+    uvicorn.run("backend.app.main:app", host="0.0.0.0", port=port, reload=False)
