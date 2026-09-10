@@ -1,0 +1,4 @@
+event_id,patient_id,event_type,severity,detected_at,description,status
+EVT_701,PAT_001,HYPERTENSIVE_CRISIS_RISK,CRITICAL,2026-09-09 08:30:00,Systolic BP spiked to 188 mmHg (> 180 threshold) accompanied by severe occipital headache.,PENDING_DOCTOR_REVIEW
+EVT_702,PAT_002,MEDICATION_NON_ADHERENCE,WARNING,2026-09-08 20:00:00,Metformin missed for 3 consecutive evening doses. Adherence 30-day rate dropped to 68%.,ALERTED_PATIENT
+EVT_703,PAT_004,HYPOXEMIA_DESATURATION,CRITICAL,2026-09-10 06:20:00,SpO2 dropped to 88% (< 90% threshold) with resting respiratory rate 24 bpm.,ESCALATED_EMERGENCY

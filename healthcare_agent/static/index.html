@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeuroNex MediSense AI — Healthcare Research & Patient Support Agent</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand-section">
+        <div class="brand-icon">🩺</div>
+        <div>
+          <h1 class="brand-title">NeuroNex MediSense AI</h1>
+          <div class="brand-subtitle">Clinical Research & Autonomous Patient Support Platform</div>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <!-- Persona Switcher -->
+        <div class="persona-switcher">
+          <button id="btn-doctor-mode" class="persona-btn active" onclick="switchPersona('doctor')">
+            👨⚕️ Doctor Command Center
+          </button>
+          <button id="btn-patient-mode" class="persona-btn" onclick="switchPersona('patient')">
+            👤 Patient Daily Companion
+          </button>
+        </div>
+
+        <!-- Active Patient Selector -->
+        <div class="patient-select-wrap">
+          <select id="patient-select" onchange="onPatientChange()">
+            <option value="PAT_001">PAT_001 - Ramesh Krishnamurthy (High BP Spike)</option>
+            <option value="PAT_002">PAT_002 - Meera Nambiar (T2 Diabetes / Neuropathy)</option>
+            <option value="PAT_003">PAT_003 - Vikram Singhania (Asthma / Stable)</option>
+            <option value="PAT_004">PAT_004 - Savitri Devi (Heart Failure / Critical SpO2)</option>
+          </select>
+        </div>
+
+        <!-- Live Status Pill -->
+        <div id="live-status-pill" class="status-badge-live status-normal">
+          <span id="status-dot">●</span>
+          <span id="status-text">All Metrics Stable</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Emergency / Safety Alert Banner (Dynamic) -->
+    <div id="safety-alert-banner" class="alert-banner" style="display: none;">
+      <div class="alert-banner-content">
+        <div class="alert-icon">🚨</div>
+        <div>
+          <div id="alert-title-text" class="alert-title">CRITICAL SAFETY ALERT TRIGGERED</div>
+          <div id="alert-desc-text" class="alert-desc">Rule breached: Systolic BP >= 180 mmHg. Immediate Physician Review Required.</div>
+        </div>
+      </div>
+      <button class="btn-primary" style="background: #e11d48;" onclick="acknowledgeAlert()">Acknowledge & Triage</button>
+    </div>
+
+    <!-- ==================== 👨⚕️ DOCTOR COMMAND CENTER ==================== -->
+    <main id="doctor-portal" class="portal-view active">
+      
+      <!-- Patient 360 Profile Strip -->
+      <section class="patient-profile-strip" id="doctor-patient-strip">
+        <div class="profile-item">
+          <span class="profile-label">Patient Name & ID</span>
+          <span class="profile-val" id="doc-patient-name">Ramesh Krishnamurthy (PAT_001)</span>
+        </div>
+        <div class="profile-item">
+          <span class="profile-label">Age / Gender / Blood</span>
+          <span class="profile-val" id="doc-patient-demographics">58 Yrs • Male • B+</span>
+        </div>
+        <div class="profile-item">
+          <span class="profile-label">Primary Diagnosis</span>
+          <span class="profile-val" id="doc-patient-condition">Hypertensive Heart Disease & Stage 2 HTN</span>
+        </div>
+        <div class="profile-item">
+          <span class="profile-label">Known Allergies</span>
+          <span class="profile-val" id="doc-patient-allergies" style="color: #fda4af;">Penicillin, Sulfa drugs</span>
+        </div>
+        <div class="profile-item">
+          <span class="profile-label">Risk Classification</span>
+          <span class="risk-tag risk-HIGH" id="doc-patient-risk">HIGH RISK</span>
+        </div>
+      </section>
+
+      <!-- Row: What Changed? & Why It Matters? (The Explanation Engine) -->
+      <section class="grid-2">
+        <div class="card changed-card">
+          <h2 class="card-title"><span class="icon">🔍</span> WHAT CHANGED? (Clinical Deltas)</h2>
+          <ul class="bullet-list" id="what-changed-list">
+            <li>Loading clinical deltas...</li>
+          </ul>
+        </div>
+
+        <div class="card matters-card">
+          <h2 class="card-title"><span class="icon">🧠</span> WHY IT MATTERS? (Pathophysiology & Risk)</h2>
+          <ul class="bullet-list" id="why-it-matters-list">
+            <li>Loading clinical reasoning...</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Row: Vitals Time-Series Chart & Lab Biomarkers -->
+      <section class="grid-2">
+        <div class="card">
+          <h2 class="card-title"><span class="icon">📈</span> 15-Day Vitals Trend & Longitudinal Trajectory</h2>
+          <div class="chart-container">
+            <canvas id="vitalsChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title"><span class="icon">🧪</span> Recent Lab Biomarkers & Organ Function Panels</h2>
+          <div class="grid-2" id="lab-biomarkers-grid">
+            <!-- Dynamically populated -->
+          </div>
+          <div style="margin-top: 16px;">
+            <h3 style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">Active Prescription Regimen & Adherence:</h3>
+            <div id="doctor-meds-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Row: Structured SOAP Note (Documentation Agent) -->
+      <section class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h2 class="card-title" style="margin-bottom: 0;"><span class="icon">📝</span> Automated Structured SOAP Note (Documentation Agent)</h2>
+          <button class="btn-primary" onclick="copySOAPNote()">📋 Copy Digital Note</button>
+        </div>
+        <div class="soap-grid">
+          <div class="soap-box">
+            <div class="soap-box-header"><span>[S] SUBJECTIVE</span> <span>Patient History & Complaints</span></div>
+            <div class="soap-box-body" id="soap-s">Loading...</div>
+          </div>
+          <div class="soap-box">
+            <div class="soap-box-header"><span>[O] OBJECTIVE</span> <span>Vitals & Lab Findings</span></div>
+            <div class="soap-box-body" id="soap-o">Loading...</div>
+          </div>
+          <div class="soap-box">
+            <div class="soap-box-header"><span>[A] ASSESSMENT</span> <span>Diagnosis & Trend Evaluation</span></div>
+            <div class="soap-box-body" id="soap-a">Loading...</div>
+          </div>
+          <div class="soap-box">
+            <div class="soap-box-header"><span>[P] PLAN</span> <span>Care Plan & Research Citations</span></div>
+            <div class="soap-box-body" id="soap-p">Loading...</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Row: AI Research & Evidence Verification (RAG Engine) -->
+      <section class="card">
+        <h2 class="card-title"><span class="icon">🔬</span> AI Research & Clinical Literature Verification (RAG)</h2>
+        <div class="rag-search-bar">
+          <input type="text" id="rag-query-input" placeholder="Search treatment guidelines, drug combinations, or trial evidence (e.g., 'Telmisartan Amlodipine combination' or 'SGLT2 nephroprotection')...">
+          <button class="btn-primary" onclick="executeRAGSearch()">Search Literature</button>
+        </div>
+        <div id="rag-evidence-container">
+          <!-- Populated by RAG search -->
+        </div>
+      </section>
+
+      <!-- Doctor Clinical Copilot Chat -->
+      <section class="card">
+        <h2 class="card-title"><span class="icon">💬</span> Doctor Clinical Decision Assistant</h2>
+        <div class="chat-window">
+          <div class="chat-messages" id="doctor-chat-box">
+            <div class="chat-bubble bot">
+              Doctor assistant ready. Ask any clinical question, treatment protocol query, or drug interaction check for this patient.
+            </div>
+          </div>
+          <div class="chat-input-bar">
+            <input type="text" id="doctor-chat-input" placeholder="Type clinical query (e.g. 'Should I adjust dosage for Stage 2 HTN with morning headaches?')..." onkeypress="handleDoctorChatEnter(event)">
+            <button class="btn-primary" onclick="sendDoctorMessage()">Send</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ==================== 👤 PATIENT DAILY COMPANION ==================== -->
+    <main id="patient-portal" class="portal-view">
+      
+      <!-- Patient Hero Status -->
+      <section class="patient-hero">
+        <div class="patient-hero-text">
+          <h2 id="patient-hero-greeting">Good day, Ramesh! 👋</h2>
+          <p id="patient-hero-sub">Here is your daily health companion plan. Stay on track with your medications and log your daily check-in.</p>
+        </div>
+        <div class="vital-stat-box" style="background: rgba(15, 23, 42, 0.6); min-width: 180px;">
+          <div class="vital-stat-label">30-Day Adherence</div>
+          <div class="vital-stat-value" id="patient-adherence-val">93.3%</div>
+          <div class="vital-stat-delta" style="color: #34d399;">Medications on track</div>
+        </div>
+      </section>
+
+      <!-- Patient Grid: Daily Precautions + Medication Checklist -->
+      <section class="grid-2">
+        
+        <!-- Medication Schedule & Quick Adherence Logger -->
+        <div class="card">
+          <h2 class="card-title"><span class="icon">💊</span> Today's Medication Schedule & Adherence</h2>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 12px;">Click "Take Dose" to record your daily intake:</p>
+          <div id="patient-medication-list">
+            <!-- Med items rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Daily Health Check-In Form -->
+        <div class="card">
+          <h2 class="card-title"><span class="icon">📝</span> Daily Wellness Check-In</h2>
+          <form class="checkin-form" id="daily-checkin-form" onsubmit="submitPatientCheckin(event)">
+            <div class="form-group">
+              <label for="chk-pain">Pain Score (0 - 10): <span id="pain-val-display">3</span></label>
+              <input type="range" id="chk-pain" min="0" max="10" value="3" oninput="document.getElementById('pain-val-display').innerText = this.value">
+            </div>
+            <div class="form-group">
+              <label for="chk-sleep">Sleep Duration (Hours):</label>
+              <input type="number" id="chk-sleep" min="1" max="16" step="0.5" value="6.5">
+            </div>
+            <div class="form-group">
+              <label for="chk-fatigue">Fatigue Level:</label>
+              <select id="chk-fatigue">
+                <option value="Low">Low / Energetic</option>
+                <option value="Moderate" selected>Moderate</option>
+                <option value="High">High / Exhausted</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="chk-mood">Current Mood:</label>
+              <select id="chk-mood">
+                <option value="Good">Good / Calm</option>
+                <option value="Anxious">Anxious</option>
+                <option value="Fatigued">Fatigued</option>
+                <option value="Distressed">Distressed</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="chk-fluid">Fluid Intake (Liters):</label>
+              <input type="number" id="chk-fluid" min="0.5" max="5.0" step="0.1" value="2.0">
+            </div>
+            <div class="form-group">
+              <label for="chk-notes">Personal Notes / Symptoms:</label>
+              <input type="text" id="chk-notes" placeholder="e.g. Mild headache after waking up...">
+            </div>
+            <button type="submit" class="btn-primary form-full-btn">Submit Daily Check-In</button>
+          </form>
+        </div>
+
+      </section>
+
+      <!-- Row: Daily Precautions & Health Guidance -->
+      <section class="grid-2">
+        <div class="card">
+          <h2 class="card-title"><span class="icon">🛡️</span> Personalized Daily Precautions & Lifestyle Guidance</h2>
+          <ul class="bullet-list" id="patient-precautions-list">
+            <!-- Dynamic precautions -->
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title"><span class="icon">🚨</span> Emergency Doctor Contact & Escalation</h2>
+          <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; margin-bottom: 12px;">
+            <div style="font-weight: 700; font-size: 0.95rem; color: #ffffff;" id="patient-doc-name">Dr. Arvind Ramanathan (Cardiologist)</div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px;" id="patient-hosp-name">Apollo Super Specialty Hospital, Chennai</div>
+            <div style="font-size: 0.85rem; color: var(--accent-blue); margin-top: 6px;" id="patient-emerg-contact">Emergency: +91-44-2829-0200</div>
+          </div>
+          <button class="btn-primary" style="width: 100%; background: linear-gradient(135deg, #e11d48, #be123c);" onclick="triggerPatientSOS()">
+            🚨 Trigger Emergency SOS Alert
+          </button>
+        </div>
+      </section>
+
+      <!-- Patient 24/7 AI Companion Chat -->
+      <section class="card">
+        <h2 class="card-title"><span class="icon">❤️</span> 24/7 AI Health Companion</h2>
+        <div class="chat-quick-tags">
+          <span class="quick-tag" onclick="quickPatientChat('I have a morning headache and feel slightly dizzy.')">🤕 Morning Headache</span>
+          <span class="quick-tag" onclick="quickPatientChat('I feel tingling in my feet, what should I do?')">🦶 Feet Tingling</span>
+          <span class="quick-tag" onclick="quickPatientChat('How is my medication adherence doing?')">💊 My Medication Adherence</span>
+          <span class="quick-tag" onclick="quickPatientChat('What diet precautions should I follow today?')">🥗 Diet Precautions</span>
+        </div>
+        <div class="chat-window">
+          <div class="chat-messages" id="patient-chat-box">
+            <div class="chat-bubble bot">
+              Hello! I am your 24/7 MediSense Health Companion. How are you feeling today? You can log your symptoms, ask about precautions, or check your medication routine anytime.
+            </div>
+          </div>
+          <div class="chat-input-bar">
+            <input type="text" id="patient-chat-input" placeholder="Ask your health companion anything (e.g. 'I feel dizzy after morning walk')..." onkeypress="handlePatientChatEnter(event)">
+            <button class="btn-primary" onclick="sendPatientMessage()">Send</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

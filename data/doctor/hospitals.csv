@@ -1,0 +1,4 @@
+hospital_id,hospital_name,city,state,emergency_contact,trauma_level
+HOSP_001,Apollo Super Specialty Hospital,Chennai,Tamil Nadu,+91-44-2829-0200,Level 1
+HOSP_002,Fortis Memorial Healthcare Institute,Bengaluru,Karnataka,+91-80-6621-4444,Level 1
+HOSP_003,AIIMS Medical Center,New Delhi,Delhi,+91-11-2658-8500,Level 1

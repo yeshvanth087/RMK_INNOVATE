@@ -1,0 +1,5 @@
+symptom_id,patient_id,symptom_name,severity,body_location,onset_date,reported_at,notes
+SYM_201,PAT_001,Throbbing Occipital Headache & Dizziness,8,Head / Neck,2026-09-08 07:00:00,2026-09-08 08:30:00,Triggered upon waking up; accompanied by blurred vision sensation.
+SYM_202,PAT_002,Tingling & Burning Dysesthesia in Toes,6,Feet / Lower Extremities,2026-09-05 21:00:00,2026-09-06 09:15:00,"Worse at night, interfering with sleep cycle."
+SYM_203,PAT_003,Mild Dry Cough after morning walk,3,Chest / Throat,2026-09-07 07:30:00,2026-09-07 08:00:00,Relieved after using Budesonide inhaler.
+SYM_204,PAT_004,Severe Shortness of Breath at Rest & Orthopnea,9,Chest,2026-09-09 23:00:00,2026-09-10 06:15:00,"Patient unable to lie flat, sleeping propped on 3 pillows."

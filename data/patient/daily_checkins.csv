@@ -1,0 +1,41 @@
+checkin_id,patient_id,checkin_date,pain_score,sleep_hours,fatigue_level,mood,fluid_intake_liters,notes
+CHK_100,PAT_001,2026-09-01,3,6.0,Moderate,Anxious,2.2,Followed prescribed diet.
+CHK_101,PAT_001,2026-09-02,3,6.0,Moderate,Anxious,2.2,Followed prescribed diet.
+CHK_102,PAT_001,2026-09-03,3,6.0,Moderate,Anxious,2.2,Followed prescribed diet.
+CHK_103,PAT_001,2026-09-04,3,6.0,Moderate,Anxious,2.2,Followed prescribed diet.
+CHK_104,PAT_001,2026-09-05,3,6.0,Moderate,Anxious,2.2,Followed prescribed diet.
+CHK_105,PAT_001,2026-09-06,3,6.0,Moderate,Anxious,2.2,Followed prescribed diet.
+CHK_106,PAT_001,2026-09-07,3,6.0,Moderate,Anxious,2.2,Followed prescribed diet.
+CHK_107,PAT_001,2026-09-08,3,6.0,High,Stressed,2.2,Experiencing increasing morning stiffness.
+CHK_108,PAT_001,2026-09-09,4,5.5,High,Stressed,2.2,Experiencing increasing morning stiffness.
+CHK_109,PAT_001,2026-09-10,4,5.5,High,Stressed,2.2,Experiencing increasing morning stiffness.
+CHK_110,PAT_002,2026-09-01,4,6.5,Moderate,Fatigued,2.2,Followed prescribed diet.
+CHK_111,PAT_002,2026-09-02,4,6.5,Moderate,Fatigued,2.2,Followed prescribed diet.
+CHK_112,PAT_002,2026-09-03,4,6.5,Moderate,Fatigued,2.2,Followed prescribed diet.
+CHK_113,PAT_002,2026-09-04,4,6.5,Moderate,Fatigued,2.2,Followed prescribed diet.
+CHK_114,PAT_002,2026-09-05,4,6.5,Moderate,Fatigued,2.2,Followed prescribed diet.
+CHK_115,PAT_002,2026-09-06,4,6.5,Moderate,Fatigued,2.2,Followed prescribed diet.
+CHK_116,PAT_002,2026-09-07,4,6.5,Moderate,Fatigued,2.2,Followed prescribed diet.
+CHK_117,PAT_002,2026-09-08,4,6.5,Moderate,Fatigued,2.2,Experiencing increasing morning stiffness.
+CHK_118,PAT_002,2026-09-09,5,6.0,Moderate,Fatigued,2.2,Experiencing increasing morning stiffness.
+CHK_119,PAT_002,2026-09-10,5,6.0,Moderate,Fatigued,2.2,Experiencing increasing morning stiffness.
+CHK_120,PAT_003,2026-09-01,1,7.5,Moderate,Good,2.2,Followed prescribed diet.
+CHK_121,PAT_003,2026-09-02,1,7.5,Moderate,Good,2.2,Followed prescribed diet.
+CHK_122,PAT_003,2026-09-03,1,7.5,Moderate,Good,2.2,Followed prescribed diet.
+CHK_123,PAT_003,2026-09-04,1,7.5,Moderate,Good,2.2,Followed prescribed diet.
+CHK_124,PAT_003,2026-09-05,1,7.5,Moderate,Good,2.2,Followed prescribed diet.
+CHK_125,PAT_003,2026-09-06,1,7.5,Moderate,Good,2.2,Followed prescribed diet.
+CHK_126,PAT_003,2026-09-07,1,7.5,Moderate,Good,2.2,Followed prescribed diet.
+CHK_127,PAT_003,2026-09-08,1,7.5,Moderate,Good,2.2,Experiencing increasing morning stiffness.
+CHK_128,PAT_003,2026-09-09,2,7.0,Moderate,Good,2.2,Experiencing increasing morning stiffness.
+CHK_129,PAT_003,2026-09-10,2,7.0,Moderate,Good,2.2,Experiencing increasing morning stiffness.
+CHK_130,PAT_004,2026-09-01,7,4.0,Moderate,Distressed,1.2,Followed prescribed diet.
+CHK_131,PAT_004,2026-09-02,7,4.0,Moderate,Distressed,1.2,Followed prescribed diet.
+CHK_132,PAT_004,2026-09-03,7,4.0,Moderate,Distressed,1.2,Followed prescribed diet.
+CHK_133,PAT_004,2026-09-04,7,4.0,Moderate,Distressed,1.2,Followed prescribed diet.
+CHK_134,PAT_004,2026-09-05,7,4.0,Moderate,Distressed,1.2,Followed prescribed diet.
+CHK_135,PAT_004,2026-09-06,7,4.0,Moderate,Distressed,1.2,Followed prescribed diet.
+CHK_136,PAT_004,2026-09-07,7,4.0,Moderate,Distressed,1.2,Followed prescribed diet.
+CHK_137,PAT_004,2026-09-08,7,4.0,High,Stressed,1.2,Experiencing increasing morning stiffness.
+CHK_138,PAT_004,2026-09-09,8,3.5,High,Stressed,1.2,Experiencing increasing morning stiffness.
+CHK_139,PAT_004,2026-09-10,8,3.5,High,Stressed,1.2,Experiencing increasing morning stiffness.

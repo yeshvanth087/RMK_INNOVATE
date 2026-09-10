@@ -1,0 +1,8 @@
+rule_id,rule_name,metric_name,operator,threshold_value,severity_level,escalation_action,clinical_rationale,is_active
+ESC_001,Hypertensive Urgency / Crisis Spike,systolic_bp,>=,180.0,CRITICAL,TRIGGER_EMERGENCY_DOCTOR_ALERT,Systolic BP >= 180 mmHg represents hypertensive urgency/crisis with immediate risk of cerebrovascular accident or acute heart failure.,1
+ESC_002,Severe Diastolic Hypertension,diastolic_bp,>=,110.0,CRITICAL,TRIGGER_EMERGENCY_DOCTOR_ALERT,Diastolic pressure >= 110 mmHg causes severe end-organ vascular stress.,1
+ESC_003,Acute Hypoxemia Desaturation,spo2,<=,90.0,CRITICAL,TRIGGER_EMERGENCY_AMBULANCE_OR_DOCTOR,"Pulse oximetry SpO2 <= 90% indicates respiratory compromise, acute pulmonary edema, or severe asthma exacerbation.",1
+ESC_004,Marked Tachycardia at Rest,heart_rate,>=,115.0,WARNING,PROMPT_PHYSICIAN_SAME_DAY_REVIEW,"Resting heart rate >= 115 bpm may indicate decompensation, arrhythmia, sepsis, or severe pain.",1
+ESC_005,Severe Hyperglycemia Spike,blood_glucose_mg_dl,>=,250.0,WARNING,ALERT_DOCTOR_GLYCEMIC_TITRATION,Blood glucose >= 250 mg/dL increases hyperosmolar and ketoacidosis risk.,1
+ESC_006,Severe Critical Pain Score,pain_score,>=,8.0,WARNING,PROMPT_CLINICAL_NURSE_TRIAGE,Pain score >= 8/10 signals acute clinical decompensation or uncontrolled condition.,1
+ESC_007,Critical Medication Non-Adherence,adherence_rate,<=,70.0,WARNING,NOTIFY_DOCTOR_MEDICATION_NONCOMPLIANCE,"Adherence <= 70% precipitates disease recurrence, rebound hypertension, or loss of glycemic control.",1

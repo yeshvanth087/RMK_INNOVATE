@@ -1,65 +1,95 @@
-# 🚍 NeuroNex UrbanSense AI — Mobile Urban Intelligence Platform
+# 🩺 NeuroNex MediSense AI — Healthcare Research & Patient Support Agent
 
-### **Smart India Hackathon 2026 | Problem Statement ID: SIH26124**
-**Organization:** Bharat Electronics Limited (BEL)  
-**Theme:** Fitness & Sports / Software / Intelligent Urban Mobility  
-**Team Name:** NeuroNex
+### **Smart India Hackathon 2026 | Problem Statement: AI-Powered Healthcare Research & Patient Support Agent**
+**Team Name:** NeuroNex  
+**Theme:** MedTech / Healthcare / AI Clinical Decision Support  
 
 ---
 
 ## 🌟 Executive Overview
-In modern smart cities, thousands of public transit buses traverse every major arterial road every day. While these buses carry multiple cameras (front, rear, sides, and cabin), they are traditionally used only for passive incident recording. 
+In modern healthcare systems, doctors spend up to **50% of their working hours on documentation, record retrieval, and manual data synthesis**, leading to clinician burnout and delayed follow-ups. Meanwhile, patients struggle with **complex medical jargon, low medication adherence, and lack of continuous monitoring between appointments**.
 
-**NeuroNex UrbanSense AI** transforms municipal bus fleets into an **autonomous mobile sensing network**. The platform executes edge computer vision onboard buses to continuously detect:
-- 🚧 **Road surface defects & hazards:** Potholes, cracks, waterlogging, damaged road dividers, missing zebra crossings, and obscured traffic signs.
-- 🚗 **Traffic density & bottlenecks:** Multi-class vehicle counting and Passenger Car Unit (PCU) congestion estimation.
-- 🚸 **Pedestrian & VRU safety:** School children crossing and vulnerable road users in traffic lanes.
-- 🚨 **Law enforcement incidents:** Hit-and-run tracking, rash driving detection, and Automatic Number Plate Recognition (ANPR) with confidence scores, GPS coordinates, and timestamped evidence packages.
+**NeuroNex MediSense AI** is an autonomous, multi-agent clinical platform designed to bridge this gap. It acts as an **AI Healthcare Teammate**:
+- 👨⚕️ **For Doctors:** Automates structured SOAP clinical notes, detects longitudinal vitals trends and lab anomalies, synthesizes *"What Changed?"* vs *"Why It Matters?"*, and verifies medical literature with DOI citations.
+- 👤 **For Patients:** Provides a 24/7 empathetic health companion, tracks daily medication adherence with interactive dose logging, monitors wellness check-ins, and enforces deterministic emergency escalation rules.
 
-The **Centralized Platform** aggregates fleet telemetry, performs spatial deduplication (`ST_ClusterDBSCAN`), predicts transit delays using ML models, optimizes bus routes using Google OR-Tools VRP, and provides role-based command centers for **Municipal PWD**, **Traffic Police**, and **Public Transit Operations**.
+> **USP:** *“AI handles the information. Doctors handle the decisions. More efficient analysis. Better-informed care. More time for patients.”*
 
 ---
 
-## 🏗️ Architecture & Component Synthesis
+## 🏗️ Architecture & Multi-Agent Pipeline
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   EDGE LAYER (ONBOARD BUS SENSING UNIT)                │
-│  • Multi-Camera Feed + GPS/IMU Telemetry                              │
-│  • YOLOv8/v11 & ByteTrack Road Hazard, Traffic, VRU & ANPR Detectors  │
-│  • Zero-Raw-Video Bandwidth Packager (Compact JSON + Thumbnails)       │
-└───────────────────────────────────┬────────────────────────────────────┘
-                                    │  MQTT / 4G / 5G
-                                    ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│             CENTRAL ANALYTICS & GEOSPATIAL CLOUD (FASTAPI)             │
-│  • Spatial Deduplication (ST_ClusterDBSCAN 15m Pothole Merge)          │
-│  • ML ETA & Delay Predictor (Random Forest / XGBoost + Weather)        │
-│  • Dynamic Hazard Detour Optimizer (Google OR-Tools VRP + NetworkX)    │
-│  • GTFS Transit Bottleneck Analyzer (Schedule Variance Index)          │
-│  • Urban AI Decision Support Assistant (Conversational NLP)            │
-└───────────────────────────────────┬────────────────────────────────────┘
-                                    │
-                                    ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│           ROLE-BASED GIS COMMAND CENTER & AUTHORITY PORTALS            │
-│  [1] Municipal PWD Portal: Auto Work Orders & AI Repair Verification   │
-│  [2] Traffic Police Portal: ANPR Hit-and-Run Interceptor & Evidence    │
-│  [3] Transit Ops Portal: Fleet Tracking, Delays & Dynamic Detours      │
-│  [4] AI Urban Assistant: Natural Language Plain-English Decision Chat  │
-└────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    User([👨⚕️ Doctor / 👤 Patient]) --> Orchestrator[🧠 Master Orchestrator Agent]
+    
+    subgraph Agents [Specialized Agents Layer]
+        Orchestrator --> DocAgent[📝 Documentation Agent]
+        Orchestrator --> ResearchAgent[🔍 Research Agent - RAG]
+        Orchestrator --> AnalysisAgent[📈 Analysis Agent - Trends]
+        Orchestrator --> MonitorAgent[❤️ Daily Monitoring Agent]
+    end
+
+    subgraph Storage [Health Graph & Knowledge Base]
+        DocAgent --> SQLiteDB[(🗄️ SQLite Health Graph - 13 CSVs)]
+        AnalysisAgent --> SQLiteDB
+        MonitorAgent --> SQLiteDB
+        ResearchAgent --> VectorEngine[(📚 Medical Vector / TF-IDF RAG)]
+    end
+
+    subgraph Reasoning [Explanation & Safety Layer]
+        SQLiteDB --> Explainer[💡 Explanation Engine\n'What Changed?' & 'Why It Matters?']
+        Explainer --> SafetyEngine[🚨 Safety & Escalation Engine\nescalation_rules.csv]
+    end
+
+    SafetyEngine -->|🟢 Normal| PatientGuidance[📱 Patient Daily Plan & Precautions]
+    SafetyEngine -->|🔴 Concern| DoctorAlert[🚨 Emergency Worklist & Clinical Triage]
+    DoctorAlert --> DoctorReview[👨⚕️ Doctor Human Decision]
 ```
 
 ---
 
-## 🔗 Reference Repositories Synthesized
+## 📊 Dataset Schema & Entity Relationship
 
-| Repository | Synthesized Capability in UrbanSense AI |
-| :--- | :--- |
-| **`chaitanyab24/Smart-Bus-Route-Optimization`** | **DBSCAN POI Clustering & OR-Tools VRP**: Solves dynamic detour routing around high-severity road hazards, potholes, and waterlogging. |
-| **`AKHIL-SAURABH/PTOML-public-transport-optimization-ml`** | **ML ETA Prediction & Crowding Classification**: Predicts trip delays conditioned on live traffic density (PCU), weather rainfall, and passenger load. |
-| **`Hemamalini-L/Smart-Chennai-Public-Transport-Bottleneck-Analyzer`** | **GTFS Schedule Variance & Weather Impact Analyzer**: Identifies structural corridor bottlenecks across Chennai / metro transit networks. |
-| **`MdAshrufali/TransportAi_platform_proj`** | **AI Decision Support Framework**: Conversational NLP assistant answering plain-English queries from municipal and police authorities. |
+The platform connects **13 specialized clinical datasets** anchored around `patient_id`:
+
+```
+                    patient_id
+                         │
+          ┌──────────────┼───────────────┐
+          │              │               │
+          ▼              ▼               ▼
+      Patients      Consultations      Vitals
+          │              │               │
+          │              ▼               ▼
+          │         Medications      Lab Results
+          │              │
+          │              ▼
+          │         Adherence
+          │
+          ├──────────► Symptoms
+          │
+          ├──────────► Daily Check-ins
+          │
+          ├──────────► Appointments
+          │
+          └──────────► Monitoring Events
+```
+
+### Dataset Breakdown:
+1. `data/patient/patients.csv` — Demographics, baseline diagnoses, allergies, emergency contacts, risk tiers.
+2. `data/patient/consultations.csv` — Clinical visit notes, chief complaints, ICD-10 codes, treatment plans.
+3. `data/patient/vitals.csv` — 15-day longitudinal time-series (Systolic/Diastolic BP, SpO2, HR, Glucose, Temp).
+4. `data/patient/lab_results.csv` — Diagnostic biomarkers (HbA1c, NT-proBNP, Serum Creatinine, Microalbumin).
+5. `data/patient/symptoms.csv` — Patient-reported symptoms, severity (1-10), onset timestamps, body locations.
+6. `data/patient/daily_checkins.csv` — Daily wellness logs (pain score, sleep duration, fatigue, mood, fluid intake).
+7. `data/patient/monitoring_events.csv` — System-detected anomalies (hypertensive spike risk, hypoxemia, missed doses).
+8. `data/medication/medications.csv` — Active prescriptions, dosages, administration routes, schedules.
+9. `data/medication/medication_adherence.csv` — Doses scheduled vs taken, adherence rate %, compliance trends.
+10. `data/appointment/appointments.csv` — Scheduled consultations, departments, visit types.
+11. `data/doctor/doctors.csv` & `hospitals.csv` — Physician credentials, hospital trauma centers, emergency contacts.
+12. `data/knowledge/` — `medical_research.csv`, `medical_research_chunks.csv`, `disease_knowledge.csv` (RAG knowledge base).
+13. `data/safety/escalation_rules.csv` — Deterministic threshold rules for emergency clinical triage.
 
 ---
 
@@ -67,43 +97,59 @@ The **Centralized Platform** aggregates fleet telemetry, performs spatial dedupl
 
 ### 1. Installation
 ```bash
-# Clone and navigate to workspace
-cd sih
+# Clone the repository
+git clone https://github.com/yeshvanth087/SIH_2026.git
+cd SIH_2026
 
-# Install dependencies
-python -m pip install -r requirements.txt
+# Install required dependencies
+pip install -r requirements.txt
 ```
 
 ### 2. Run Automated Verification Tests
 ```bash
-python test_platform.py
+python test_healthcare.py
 ```
 
-### 3. Launch Platform & Live Fleet Simulator
+### 3. Start the Web Platform
 ```bash
-python run_platform.py
+python run_healthcare.py
 ```
 
-- Open **Unified Command Center**: [http://127.0.0.1:8000](http://127.0.0.1:8000)
-- Open **Interactive API Swagger Docs**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- **Unified Web Portal**: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+- **Interactive Swagger API Docs**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
 ---
 
-## 🛡️ Key Features & Authority Workflows
+## 🛡️ Core Agent Capabilities
 
-### 🏛️ Municipal Corporation / PWD Workflow
-1. **Automated Defect Ticketing:** When 2+ sensing buses detect the same pothole or a CRITICAL waterlogging event, the system deduplicates the coordinates and issues an automated PWD Work Order.
-2. **AI Repair Verification:** Once contractors complete repairs, subsequent passes by sensing buses confirm the surface restoration and automatically upgrade ticket status to `AI_VERIFIED`.
+### 👨⚕️ 1. Doctor Command Center
+- **Patient 360° Health Graph:** Immediate aggregate view of history, active meds, and risk classifications.
+- **The Explanation Engine:** Formulates **"What Changed?"** (vitals deltas, missed doses) and **"Why It Matters?"** (pathophysiological impact).
+- **Interactive Vitals Trend Chart:** 15-day longitudinal trajectory with spike and hypoxia detection.
+- **Automated SOAP Documentation:** Generates Subjective, Objective, Assessment, Plan notes ready to copy/export.
+- **AI Research Verification (RAG):** Queries peer-reviewed journals (AHA/ACC, ADA, GINA, ESC) with DOIs.
 
-### 👮 Traffic Police Workflow
-1. **ANPR Alert Stream:** Instant alert on hit-and-run or rash driving with license plate number, OCR confidence (85-98%), vehicle make/color, speed, and GPS timestamp.
-2. **Vehicle Search & Interceptor Dispatch:** Search past fleet sightings of any vehicle registration number to reconstruct movement trajectory.
+### 👤 2. Patient Daily Companion
+- **Interactive Medication Adherence:** One-click dose logging with live compliance recalculation.
+- **Daily Check-In Logger:** Sliders for pain, sleep, fatigue, mood, and personal symptoms.
+- **Proactive Care Precautions:** Condition-specific daily tips (sodium limits, foot checks, inhaler techniques).
+- **24/7 AI Companion Chat:** Empathetic guidance guarded by clinical safety thresholds.
+- **Emergency SOS Dispatch:** Immediate one-click escalation to assigned hospital and physician.
 
-### 🚌 Public Transit Operations Workflow
-1. **Real-time Fleet GIS Map:** Live bus tracking with speed, heading, and passenger crowding.
-2. **Dynamic Detour Solver:** Recalculates route waypoints using OR-Tools when critical road hazards or flooding obstruct standard corridors, displaying time saved.
+---
+
+## 🧪 Test Suite Coverage
+All 8 automated test suites pass with 100% success:
+- `[PASS]` Database table integrity across all 13 CSVs
+- `[PASS]` Multi-table Patient 360° joins
+- `[PASS]` Research RAG with DOI citations
+- `[PASS]` Clinical Analysis Agent vitals trend & spike detection
+- `[PASS]` Explanation Engine ("What Changed?" / "Why It Matters?")
+- `[PASS]` Deterministic Safety Escalation rules
+- `[PASS]` Documentation Agent SOAP generation
+- `[PASS]` FastAPI REST API endpoints & chat workflows
 
 ---
 
 ## 👥 Team NeuroNex
-*SIH 2026 | Bharat Electronics Limited (BEL)*
+*Smart India Hackathon 2026*

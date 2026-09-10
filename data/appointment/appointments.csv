@@ -1,0 +1,5 @@
+appointment_id,patient_id,doctor_id,scheduled_datetime,department,visit_type,status,notes
+APT_901,PAT_001,DOC_101,2026-09-12 11:00:00,Cardiology,Follow-up,CONFIRMED,Urgent BP titration review and 24h Holter assessment.
+APT_902,PAT_002,DOC_102,2026-09-22 14:30:00,Endocrinology,Routine Review,SCHEDULED,Review post-prandial spikes and neuropathy symptoms.
+APT_903,PAT_003,DOC_103,2026-10-15 10:00:00,Pulmonology,Routine Review,SCHEDULED,Repeat spirometry and inhaler adherence check.
+APT_904,PAT_004,DOC_101,2026-09-10 15:00:00,Cardiology / Heart Failure Clinic,Emergency Escalation,URGENT_TODAY,Decompensated heart failure and worsening SpO2 desaturation.

@@ -1,0 +1,5 @@
+doctor_id,hospital_id,doctor_name,specialization,qualification,experience_years,email,phone
+DOC_101,HOSP_001,Dr. Arvind Ramanathan,Cardiology,"MD, DM (Cardiology), FACC",18,dr.arvind.r@apollohealth.org,+91-98401-22334
+DOC_102,HOSP_001,Dr. Sunita Deshmukh,Endocrinology & Diabetology,"MD (Internal Med), DNB (Endocrinology)",14,dr.sunita.d@apollohealth.org,+91-98402-44556
+DOC_103,HOSP_002,Dr. Rajeshwar Rao,Pulmonology,MD (Pulmonary Medicine),16,dr.rao@fortishealth.org,+91-98403-66778
+DOC_104,HOSP_003,Dr. Priya Venkatesh,General Medicine,"MBBS, MD (General Medicine)",10,dr.priya@aiims.gov.in,+91-98404-88990

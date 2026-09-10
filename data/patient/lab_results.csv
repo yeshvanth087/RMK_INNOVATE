@@ -1,0 +1,7 @@
+lab_id,patient_id,consultation_id,test_name,test_date,biomarker,result_value,unit,reference_range,status
+LAB_501,PAT_001,CON_1001,Lipid Profile & Serum Electrolytes,2026-08-16 08:30:00,Serum Potassium (K+),4.6,mEq/L,3.5 - 5.0,NORMAL
+LAB_502,PAT_001,CON_1001,Lipid Profile,2026-08-16 08:30:00,LDL Cholesterol,158.0,mg/dL,< 100,ELEVATED
+LAB_503,PAT_002,CON_1002,Glycemic Control Panel,2026-08-11 09:00:00,HbA1c,8.4,%,< 5.7,HIGH
+LAB_504,PAT_002,CON_1002,Renal Function Test,2026-08-11 09:00:00,Microalbumin / Creatinine Ratio,45.0,mg/g,< 30,ELEVATED
+LAB_505,PAT_004,CON_1004,Cardiac & Renal Biomarkers,2026-08-26 10:00:00,NT-proBNP,2400.0,pg/mL,< 300,CRITICAL_HIGH
+LAB_506,PAT_004,CON_1004,Renal Function Test,2026-08-26 10:00:00,Serum Creatinine,2.4,mg/dL,0.6 - 1.2,HIGH

@@ -1,0 +1,5 @@
+patient_id,first_name,last_name,age,gender,blood_group,primary_condition,allergies,emergency_contact_name,emergency_contact_phone,assigned_doctor_id,risk_tier
+PAT_001,Ramesh,Krishnamurthy,58,Male,B+,Hypertensive Heart Disease & Stage 2 Hypertension,"Penicillin, Sulfa drugs",Kavitha Krishnamurthy (Wife),+91-98840-11223,DOC_101,HIGH
+PAT_002,Meera,Nambiar,52,Female,O+,Type 2 Diabetes Mellitus with Peripheral Neuropathy,None,Suresh Nambiar (Husband),+91-98840-22334,DOC_102,MODERATE
+PAT_003,Vikram,Singhania,44,Male,A+,Moderate Persistent Asthma & Allergic Rhinitis,"Aspirin, Dust Mites",Ananya Singhania (Sister),+91-98840-33445,DOC_103,LOW
+PAT_004,Savitri,Devi,67,Female,AB+,Chronic Kidney Disease (Stage 3b) & Congestive Heart Failure,"Ibuprofen, Contrast Dye",Rohit Kumar (Son),+91-98840-44556,DOC_101,CRITICAL

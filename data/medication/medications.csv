@@ -1,0 +1,8 @@
+medication_id,patient_id,consultation_id,medication_name,dosage,route,frequency,start_date,end_date,instructions
+MED_301,PAT_001,CON_1001,Telmisartan,40 mg,Oral,Once Daily (Morning),2026-08-15,2026-11-15,Take with or without food. Monitor daily blood pressure.
+MED_302,PAT_001,CON_1001,Amlodipine,5 mg,Oral,Once Daily (Evening),2026-08-15,2026-11-15,Take after dinner. Watch for ankle swelling.
+MED_303,PAT_001,CON_1001,Rosuvastatin,10 mg,Oral,Once Daily (Night),2026-08-15,2026-11-15,Take at bedtime for lipid reduction.
+MED_304,PAT_002,CON_1002,Metformin Hydrochloride,1000 mg,Oral,Twice Daily (Morning & Night),2026-08-10,2026-11-10,Take with meals to minimize gastrointestinal discomfort.
+MED_305,PAT_002,CON_1002,Dapagliflozin,10 mg,Oral,Once Daily (Morning),2026-08-10,2026-11-10,Stay well hydrated throughout the day.
+MED_306,PAT_003,CON_1003,Budesonide / Formoterol Inhaler,160/4.5 mcg,Inhalation (DPI),2 Puffs Twice Daily,2026-08-20,2026-12-20,Rinse mouth thoroughly with water after each inhalation.
+MED_307,PAT_004,CON_1004,Torsemide,20 mg,Oral,Once Daily (Morning),2026-08-25,2026-10-25,Take early morning. Strict daily fluid balance log required.
